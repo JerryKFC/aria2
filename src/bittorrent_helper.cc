@@ -909,6 +909,7 @@ std::unique_ptr<TorrentAttribute> parseMagnet(const std::string& magnet)
                        error_code::MAGNET_PARSE_ERROR);
   }
   auto attrs = make_unique<TorrentAttribute>();
+  attrs->magnet = magnet;
   std::string infoHash;
   for (auto xtiter = xts->begin(), eoi = xts->end();
        xtiter != eoi && infoHash.empty(); ++xtiter) {
@@ -943,17 +944,18 @@ std::unique_ptr<TorrentAttribute> parseMagnet(const std::string& magnet)
       attrs->announceList.push_back(tier);
     }
   }
-  std::string name = "[METADATA]";
+  std::string name;
   const List* dns = downcast<List>(r->get("dn"));
   if (dns && !dns->empty()) {
     const String* dn = downcast<String>(dns->get(0));
-    name += util::encodeNonUtf8(dn->s());
+    name = util::encodeNonUtf8(dn->s());
   }
   else {
-    name += util::toHex(infoHash);
+    name = util::toHex(infoHash);
   }
   attrs->infoHash = infoHash;
-  attrs->name = name;
+  attrs->name = "[METADATA]" + name;
+  attrs->filename = name;
   return attrs;
 }
 

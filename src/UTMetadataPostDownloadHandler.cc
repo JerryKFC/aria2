@@ -95,6 +95,26 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups(
     else {
       A2_LOG_NOTICE(fmt(MSG_METADATA_NOT_SAVED, filename.c_str()));
     }
+    filename =
+        util::applyDir(requestGroup->getOption()->get(PREF_DIR),
+                       attrs->filename + ".torrent");
+    if (util::saveAs(filename, torrent)) {
+      A2_LOG_NOTICE(fmt(MSG_METADATA_SAVED, filename.c_str()));
+    }
+    else {
+      A2_LOG_NOTICE(fmt(MSG_METADATA_NOT_SAVED, filename.c_str()));
+    }
+    if (!attrs->magnet.empty()) {
+      std::string filename =
+          util::applyDir(requestGroup->getOption()->get(PREF_DIR),
+                         attrs->filename + ".url");
+      if (util::saveAs(filename, attrs->magnet + "\r\n")) {
+        A2_LOG_NOTICE(fmt(MSG_METADATA_SAVED, filename.c_str()));
+      }
+      else {
+        A2_LOG_NOTICE(fmt(MSG_METADATA_NOT_SAVED, filename.c_str()));
+      }
+    }
   }
   if (!requestGroup->getOption()->getAsBool(PREF_BT_METADATA_ONLY)) {
     std::vector<std::shared_ptr<RequestGroup>> newRgs;

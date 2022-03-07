@@ -46,7 +46,9 @@
 namespace aria2 {
 
 struct TorrentAttribute : public ContextAttribute {
+  std::string magnet;
   std::string name;
+  std::string filename;
   BtFileMode mode;
   std::vector<std::vector<std::string>> announceList;
   std::vector<std::pair<std::string, uint16_t>> nodes;
